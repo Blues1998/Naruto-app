@@ -14,12 +14,15 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  MaterialColor primarySwatch = Colors.deepPurple;
+  MaterialColor _primarySwatchColor = Colors.deepPurple;
+  Color _containerColor = Colors.white;
 
-  void changePrimarySwatchColor(MaterialColor newColor) {
+  void _changeTheme(MaterialColor color, Color containerColor) {
     setState(() {
-      primarySwatch = newColor;
+      _primarySwatchColor = color;
+      _containerColor = containerColor;
     });
+    // Perform any other theme-related actions
   }
 
   @override
@@ -27,23 +30,26 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'Naruto Flutter App',
       theme: ThemeData(
-        primarySwatch: primarySwatch,
+        primarySwatch: _primarySwatchColor,
       ),
       home: HomeScreen(
-        primarySwatchColor: primarySwatch,
-        onPrimarySwatchColorChanged: changePrimarySwatchColor,
+        primaryColor: Colors.red,
+        onPrimarySwatchColorChanged: _changeTheme,
+        containerColor: _containerColor,
       ),
     );
   }
 }
 
 class HomeScreen extends StatefulWidget {
-  final MaterialColor primarySwatchColor;
-  final void Function(MaterialColor) onPrimarySwatchColorChanged;
+  final Color primaryColor;
+  final void Function(MaterialColor, Color) onPrimarySwatchColorChanged;
+  final Color containerColor;
 
   HomeScreen({
-    required this.primarySwatchColor,
+    required this.primaryColor,
     required this.onPrimarySwatchColorChanged,
+    required this.containerColor,
   });
 
   @override
@@ -59,8 +65,7 @@ class _HomeScreenState extends State<HomeScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this, initialIndex: 0);
-    _primaryColor =
-        widget.primarySwatchColor[500]!; // Initialize _primaryColor here
+    _primaryColor = widget.primaryColor;
   }
 
   @override
@@ -114,13 +119,15 @@ class _HomeScreenState extends State<HomeScreen>
       body: TabBarView(
         controller: _tabController,
         children: <Widget>[
-          QuoteScreen(primaryColor: _primaryColor),
+          QuoteScreen(
+            primaryColor: _primaryColor,
+            containerColor: widget.containerColor,
+          ),
           GalleryScreen(),
           AboutScreen(),
           Builder(
             builder: (context) => SettingsScreen(
-              primarySwatchColor: widget.primarySwatchColor,
-              onPrimarySwatchColorChanged: widget.onPrimarySwatchColorChanged,
+              onThemeChanged: widget.onPrimarySwatchColorChanged,
             ),
           ),
         ],

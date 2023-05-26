@@ -3,8 +3,13 @@ import 'package:flutter/services.dart';
 
 class QuoteScreen extends StatefulWidget {
   final Color primaryColor;
+  final Color containerColor;
 
-  const QuoteScreen({Key? key, required this.primaryColor}) : super(key: key);
+  const QuoteScreen({
+    Key? key,
+    required this.primaryColor,
+    required this.containerColor,
+  }) : super(key: key);
 
   @override
   _QuoteScreenState createState() => _QuoteScreenState();
@@ -45,7 +50,7 @@ class _QuoteScreenState extends State<QuoteScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: widget.primaryColor, // Use the provided primary color
+      color: widget.containerColor, // Use the provided container color
       child: Column(
         children: [
           Padding(
