@@ -8,25 +8,43 @@ void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  MaterialColor primarySwatch = Colors.deepPurple;
+
+  void changePrimarySwatchColor(MaterialColor newColor) {
+    setState(() {
+      primarySwatch = newColor;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Naruto Flutter App',
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple, // Set the primary color swatch
+        primarySwatch: primarySwatch,
       ),
       home: HomeScreen(
-        primaryColor: Colors.red,
+        primarySwatchColor: primarySwatch,
+        onPrimarySwatchColorChanged: changePrimarySwatchColor,
       ),
     );
   }
 }
 
 class HomeScreen extends StatefulWidget {
-  final Color primaryColor;
+  final MaterialColor primarySwatchColor;
+  final void Function(MaterialColor) onPrimarySwatchColorChanged;
 
-  HomeScreen({required this.primaryColor});
+  HomeScreen({
+    required this.primarySwatchColor,
+    required this.onPrimarySwatchColorChanged,
+  });
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -41,7 +59,8 @@ class _HomeScreenState extends State<HomeScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this, initialIndex: 0);
-    _primaryColor = widget.primaryColor; // Initialize _primaryColor here
+    _primaryColor =
+        widget.primarySwatchColor[500]!; // Initialize _primaryColor here
   }
 
   @override
@@ -100,11 +119,8 @@ class _HomeScreenState extends State<HomeScreen>
           AboutScreen(),
           Builder(
             builder: (context) => SettingsScreen(
-              onColorChanged: (newColor) {
-                setState(() {
-                  _primaryColor = newColor;
-                });
-              },
+              primarySwatchColor: widget.primarySwatchColor,
+              onPrimarySwatchColorChanged: widget.onPrimarySwatchColorChanged,
             ),
           ),
         ],
